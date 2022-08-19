@@ -11,8 +11,8 @@ alerting:
     - targets:
       - alertmanager:9093
     basic_auth:
-      username: alertmanager username
-      password: alertmanager password
+      username: admin
+      password: 123123123
 
 # Load rules once and periodically evaluate them according to the global 'evaluation_interval'.
 rule_files:
@@ -32,15 +32,15 @@ scrape_configs:
     static_configs:
     - targets: ['localhost:9090']
     basic_auth:
-      username: prometheus username
-      password: prometheus password
+      username: admin
+      password: 123123123
 
   # node_exporter
   - job_name: node_exporter
     scrape_interval: 30s
-    basic_auth:
-      username: node_exporter username
-      password: node_exporter password
+    # basic_auth:
+    #   username: node_exporter username
+    #   password: node_exporter password
 
     file_sd_configs:
     - refresh_interval: 1m

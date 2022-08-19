@@ -39,11 +39,11 @@ targets:
   webhook_default:
     url: https://oapi.dingtalk.com/robot/send?access_token=token
     secret: SECXXXX
-
-  webhook_emergency:
-    url: https://oapi.dingtalk.com/robot/send?access_token=token
-    secret: SECXXXX
   
   webhook_critical:
+    url: https://oapi.dingtalk.com/robot/send?access_token=token
+    secret: SECXXXX
+
+  webhook_warning:
     url: https://oapi.dingtalk.com/robot/send?access_token=token
     secret: SECXXXX

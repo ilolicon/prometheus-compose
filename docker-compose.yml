@@ -3,34 +3,36 @@ version: '2.4'
 services:
 
   prometheus:
-    image: prom/prometheus:v2.33.4
+    image: prom/prometheus:latest
     container_name: prometheus
     user: root
     ports:
       - 9090:9090
     volumes:
       - ./prometheus/:/etc/prometheus/
-      - /data/prometheus/:/prometheus/
+      - ./data/prometheus/:/prometheus/
     command: 
       - '--config.file=/etc/prometheus/prometheus.yml'
       - '--storage.tsdb.path=/prometheus'
       - '--web.console.libraries=/usr/share/prometheus/console_libraries'
       - '--web.console.templates=/usr/share/prometheus/consoles'
       - '--web.config.file=/etc/prometheus/web.yml'
+      - '--web.enable-admin-api'
       - '--web.enable-lifecycle'
     links:
       - alertmanager:alertmanager
+      - node_exporter:node_exporter
     restart: always
 
   alertmanager:
-    image: prom/alertmanager:v0.23.0
+    image: prom/alertmanager:latest
     container_name: alertmanager
     user: root
     ports:
       - 9093:9093
     volumes:
       - ./alertmanager/:/etc/alertmanager/
-      - /data/alertmanager/:/alertmanager/
+      - ./data/alertmanager/:/alertmanager/
     command:
       - '--config.file=/etc/alertmanager/alertmanager.yml'
       - '--storage.path=/alertmanager'
@@ -40,21 +42,21 @@ services:
     restart: always
   
   grafana:
-    image: grafana/grafana:8.4.3
+    image: grafana/grafana-enterprise:latest
     container_name: grafana
     user: root
     ports:
       - 3000:3000
     volumes:
-      - ./grafana/:/etc/grafana/
-      - /data/grafana/:/var/lib/grafana/
+      - ./grafana/grafana.ini:/etc/grafana/grafana.ini
+      - ./data/grafana/:/var/lib/grafana/
     environment:
-      - GF_SECURITY_ADMIN_PASSWORD=Your's Password
+      - GF_SECURITY_ADMIN_PASSWORD=123123123
       - GF_INSTALL_PLUGINS=grafana-piechart-panel
     restart: always
 
   prometheus-webhook-dingtalk:
-    image: timonwong/prometheus-webhook-dingtalk
+    image: timonwong/prometheus-webhook-dingtalk:latest
     container_name: prometheus-webhook-dingtalk
     ports:
       - 127.0.0.1:8060:8060
@@ -64,3 +66,14 @@ services:
       - '--config.file=/etc/prometheus-webhook-dingtalk/config.yml'
       - '--web.enable-lifecycle'
     restart: always
+
+  node_exporter:
+    image: quay.io/prometheus/node-exporter:latest
+    container_name: node_exporter
+    command:
+      - '--path.rootfs=/host'
+    restart: unless-stopped
+    ports:
+      - 127.0.0.1:9100:9100
+    volumes:
+      - '/:/host:ro'    
