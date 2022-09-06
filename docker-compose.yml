@@ -22,7 +22,7 @@ services:
     links:
       - alertmanager:alertmanager
       - node_exporter:node_exporter
-    restart: always
+    restart: on-failure
 
   alertmanager:
     image: prom/alertmanager:latest
@@ -39,7 +39,7 @@ services:
       - '--web.config.file=/etc/alertmanager/web.yml'
     links:
       - prometheus-webhook-dingtalk:prometheus-webhook-dingtalk
-    restart: always
+    restart: on-failure
   
   grafana:
     image: grafana/grafana-enterprise:latest
@@ -53,7 +53,7 @@ services:
     environment:
       - GF_SECURITY_ADMIN_PASSWORD=123123123
       - GF_INSTALL_PLUGINS=grafana-piechart-panel
-    restart: always
+    restart: on-failure
 
   prometheus-webhook-dingtalk:
     image: timonwong/prometheus-webhook-dingtalk:latest
@@ -65,7 +65,7 @@ services:
     command:
       - '--config.file=/etc/prometheus-webhook-dingtalk/config.yml'
       - '--web.enable-lifecycle'
-    restart: always
+    restart: on-failure
 
   node_exporter:
     image: quay.io/prometheus/node-exporter:latest
